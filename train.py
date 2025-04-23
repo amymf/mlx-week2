@@ -3,6 +3,18 @@ from torch.utils.data import DataLoader
 import torch.nn.functional as F
 import model
 from dataset import MSMARCO
+import wandb
+
+wandb.init(
+    project="msmarco-dual-encoder",
+    config={
+        "learning_rate": 0.001,
+        "epochs": 50,
+        "batch_size": 32,
+        "margin": 0.2,
+    },
+)
+
 
 train_dataset = MSMARCO(split="train")
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
@@ -47,8 +59,10 @@ for epoch in range(num_epochs):
         optimizer.step()
 
         total_loss += loss.item()
+        wandb.log({"batch_loss": loss.item(), "epoch": epoch + 1})
 
     avg_loss = total_loss / len(train_loader)
+    wandb.log({"epoch_loss": avg_loss, "epoch": epoch + 1})
     print(f"Epoch {epoch+1}/{num_epochs}, Loss: {avg_loss:.4f}")
 
 # Save the model
