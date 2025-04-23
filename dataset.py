@@ -8,9 +8,13 @@ class MSMARCO(torch.utils.data.Dataset):
         self,
         split,
     ):
-        self.triplets_df = load_dataset(f"amyf/ms-marco-triplets-{split}")[f"{split}"].to_pandas()
-        self.encoded_queries = pickle.load(open("encoded_queries.pkl", "rb"))
-        self.encoded_documents = pickle.load(open("encoded_documents.pkl", "rb"))
+        self.triplets_df = load_dataset(f"amyf/ms-marco-triplets-{split}")[
+            f"{split}"
+        ].to_pandas()
+        self.encoded_queries = pickle.load(open(f"encoded_queries_{split}.pkl", "rb"))
+        self.encoded_documents = pickle.load(
+            open(f"encoded_documents_{split}.pkl", "rb")
+        )
 
     def __len__(self):
         return len(self.triplets_df)

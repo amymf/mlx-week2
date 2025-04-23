@@ -3,10 +3,12 @@ from gensim.utils import simple_preprocess
 import numpy as np
 import pandas as pd
 from gensim.models import KeyedVectors
+import argparse
 
 model = KeyedVectors.load_word2vec_format(
     "GoogleNews-vectors-negative300.bin", binary=True
 )
+
 
 def sentence_to_w2v(sentence):
     tokens = simple_preprocess(sentence)
@@ -16,54 +18,38 @@ def sentence_to_w2v(sentence):
     return np.mean(vectors, axis=0)
 
 
-queries_df = (
-    pd.read_csv("queries.tsv", sep="\t")
-)
-docs_df = (
-    pd.read_csv("documents.tsv", sep="\t")
-)
+def encode_and_save_queries(split: str):
+    queries_df = pd.read_csv(f"queries_{split}.tsv", sep="\t")
+    encoded_queries = {
+        row["query_id"]: sentence_to_w2v(row["query_text"])
+        for _, row in queries_df.iterrows()
+    }
+    with open(f"encoded_queries_{split}.pkl", "wb") as f:
+        pickle.dump(encoded_queries, f)
 
-# Generate query embeddings
-encoded_queries = {
-    row["query_id"]: sentence_to_w2v(row["query_text"])
-    for _, row in queries_df.iterrows()
-}
 
-# Generate document embeddings
-encoded_documents = {
-    row["doc_id"]: sentence_to_w2v(row["doc_text"]) for _, row in docs_df.iterrows()
-}
+def encode_and_save_documents(split: str):
+    documents_df = pd.read_csv(f"documents_{split}.tsv", sep="\t")
+    encoded_documents = {
+        row["doc_id"]: sentence_to_w2v(row["doc_text"])
+        for _, row in documents_df.iterrows()
+    }
+    with open(f"encoded_documents_{split}.pkl", "wb") as f:
+        pickle.dump(encoded_documents, f)
 
-with open("encoded_queries.pkl", "wb") as f:
-    pickle.dump(encoded_queries, f)
 
-with open("encoded_documents.pkl", "wb") as f:
-    pickle.dump(encoded_documents, f)
+def main(split: str):
+    encode_and_save_queries(split)
+    encode_and_save_documents(split)
 
-# import torch 
-# from model import QueryTower, DocumentTower
 
-# if __name__ == "__main__":
-#     # Test the embedding functions
-#     test_query = "Who wrote An Inspector Calls?"
-#     test_doc = "An Inspector Calls is a play written by J.B. Priestley."
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Encode and save queries and documents."
+    )
+    parser.add_argument(
+        "--split", type=str, choices=["train", "validation", "test"], required=True
+    )
+    args = parser.parse_args()
 
-#     query_tower = QueryTower()
-#     doc_tower = DocumentTower()
-#     query_tower.eval()
-#     doc_tower.eval()
-
-#     query_embedding = sentence_to_w2v(test_query)
-#     doc_embedding = sentence_to_w2v(test_doc)
-#     query_embedding = torch.tensor(query_embedding, dtype=torch.float32).unsqueeze(0)
-#     doc_embedding = torch.tensor(doc_embedding, dtype=torch.float32).unsqueeze(0)
-#     # query_embedding = torch.nn.functional.normalize(query_embedding, p=2, dim=1)
-#     # doc_embedding = torch.nn.functional.normalize(doc_embedding, p=2, dim=1)
-#     query_embedding = query_tower(query_embedding)
-#     doc_embedding = doc_tower(doc_embedding)
-#     # pylint: disable=not-callable
-#     cosine_similarity = torch.nn.functional.cosine_similarity(query_embedding, doc_embedding, dim=1)
-
-#     # print("Query embedding:", query_embedding)
-#     # print("Document embedding:", doc_embedding)
-#     print("Cosine similarity:", cosine_similarity.item())
+    main(args.split)
