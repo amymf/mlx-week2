@@ -22,9 +22,6 @@ train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 query_tower = model.QueryTower()
 doc_tower = model.DocumentTower()
 
-query_tower.load_state_dict(torch.load("query_tower.pt"))
-doc_tower.load_state_dict(torch.load("doc_tower.pt"))
-
 query_tower.train()
 doc_tower.train()
 
@@ -59,10 +56,10 @@ for epoch in range(num_epochs):
         optimizer.step()
 
         total_loss += loss.item()
-        wandb.log({"batch_loss": loss.item(), "epoch": epoch + 1})
+        wandb.log({"train/batch_loss": loss.item(), "epoch": epoch + 1})
 
     avg_loss = total_loss / len(train_loader)
-    wandb.log({"epoch_loss": avg_loss, "epoch": epoch + 1})
+    wandb.log({"train/epoch_loss": avg_loss, "epoch": epoch + 1})
     print(f"Epoch {epoch+1}/{num_epochs}, Loss: {avg_loss:.4f}")
 
 # Save the model
