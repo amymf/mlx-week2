@@ -11,9 +11,9 @@ class MSMARCO(torch.utils.data.Dataset):
         self.triplets_df = load_dataset(f"amyf/ms-marco-triplets-{split}")[
             "train"  # index is train because data is already split
         ].to_pandas()
-        self.encoded_queries = pickle.load(open(f"encoded_queries_{split}.pkl", "rb"))
+        self.encoded_queries = pickle.load(open(f"data/encoded_queries_{split}.pkl", "rb"))
         self.encoded_documents = pickle.load(
-            open(f"encoded_documents_{split}.pkl", "rb")
+            open(f"data/encoded_documents_{split}.pkl", "rb")
         )
 
     def __len__(self):

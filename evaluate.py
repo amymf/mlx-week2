@@ -7,20 +7,20 @@ import pickle
 from tqdm import tqdm
 
 # Load your document data
-docs_df = pd.read_csv("documents.tsv", sep="\t")
+docs_df = pd.read_csv("data/documents_test.tsv", sep="\t")
 
 # Initialize towers
 query_tower = QueryTower()
 doc_tower = DocumentTower()
 
-query_tower.load_state_dict(torch.load("query_tower.pt"))
-doc_tower.load_state_dict(torch.load("doc_tower.pt"))
+query_tower.load_state_dict(torch.load("models/query_tower.pt"))
+doc_tower.load_state_dict(torch.load("models/doc_tower.pt"))
 
 # Set towers to evaluation mode
 query_tower.eval()
 doc_tower.eval()
 
-with open("encoded_documents.pkl", "rb") as f:
+with open("data/encoded_documents_test.pkl", "rb") as f:
     encoded_documents = pickle.load(f)
 
 
@@ -50,7 +50,7 @@ def evaluate(query, top_k=5):
     return ranked_docs
 
 
-query = "Which European country has the largest population?"
+query = "What is the largest mammal?"
 top_k_docs = evaluate(query, top_k=5)
 
 for doc, sim in top_k_docs:

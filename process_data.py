@@ -97,9 +97,9 @@ def create_dataframes(split: str, batched_triplets):
 
 
 def save_dataframes(split:str, queries_df, documents_df, triplets_df):
-    queries_df.to_csv(f"queries_{split}.tsv", sep="\t", index=False)
-    documents_df.to_csv(f"documents_{split}.tsv", sep="\t", index=False)
-    triplets_df.to_csv(f"triplets_{split}.tsv", sep="\t", index=False)
+    queries_df.to_csv(f"data/queries_{split}.tsv", sep="\t", index=False)
+    documents_df.to_csv(f"data/documents_{split}.tsv", sep="\t", index=False)
+    triplets_df.to_csv(f"data/triplets_{split}.tsv", sep="\t", index=False)
 
 
 def push_to_hugging_face(split: str, queries_df, documents_df, triplets_df):
