@@ -31,7 +31,7 @@ optimizer = torch.optim.Adam(
     list(query_tower.parameters()) + list(doc_tower.parameters()), lr=0.001
 )
 
-num_epochs = 20
+num_epochs = 24
 margin = torch.tensor(0.2)
 for epoch in range(num_epochs):
     # Training step
@@ -96,5 +96,5 @@ for epoch in range(num_epochs):
     print(f"Epoch {epoch+1}/{num_epochs}, Train Loss: {avg_train_loss:.4f}, Validate Loss: {avg_validate_loss:.4f}")
 
 # Save the model
-torch.save(query_tower.state_dict(), "query_tower.pt")
-torch.save(doc_tower.state_dict(), "doc_tower.pt")
+torch.save(query_tower.state_dict(), "models/query_tower.pt")
+torch.save(doc_tower.state_dict(), "models/doc_tower.pt")

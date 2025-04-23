@@ -12,8 +12,8 @@ test_loader = DataLoader(test_dataset, batch_size=32, shuffle=True)
 query_tower = model.QueryTower()
 doc_tower = model.DocumentTower()
 
-query_tower.load_state_dict(torch.load("query_tower.pt"))
-doc_tower.load_state_dict(torch.load("doc_tower.pt"))
+query_tower.load_state_dict(torch.load("models/query_tower.pt"))
+doc_tower.load_state_dict(torch.load("models/doc_tower.pt"))
 
 query_tower.eval()
 doc_tower.eval()
