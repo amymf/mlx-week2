@@ -9,7 +9,7 @@ class MSMARCO(torch.utils.data.Dataset):
         split,
     ):
         self.triplets_df = load_dataset(f"amyf/ms-marco-triplets-{split}")[
-            f"{split}"
+            "train"  # index is train because data is already split
         ].to_pandas()
         self.encoded_queries = pickle.load(open(f"encoded_queries_{split}.pkl", "rb"))
         self.encoded_documents = pickle.load(
